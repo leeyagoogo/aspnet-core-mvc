@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<section class="hero admin-hero container">
+    <div class="hero-content">
+        <div class="hero-left">
+
+            <h1>WHERE</h1>
+            <h1 class="highlight">PAWS</h1>
+            <h1>MEET PARADISE</h1>
+            <p class="subtitle">From treats to toys, find your pet's joy.</p>
+            <a asp-controller="Products" asp-action="Index" class="shop-btn">Manage Products</a>
+        </div>
+
+        <div class="hero-right">
+            <img src="~/pictures/dog&cat.png" alt="Pets" class="pets-image" />
+        </div>
+    </div>
+</section>
+
+<section class="admin-dashboard container">
+    <h3 class="dashboard-title">Admin Dashboard</h3>
+
+    <div class="card-grid">
+        <div class="dash-card">
+            <div class="card-icon">📦</div>
+            <div class="card-body">
+                <div class="card-title">Products</div>
+                <div class="card-value">—</div>
+                <a asp-controller="Products" asp-action="Index" class="card-btn">Manage</a>
+            </div>
+        </div>
+
+        <div class="dash-card">
+            <div class="card-icon">👥</div>
+            <div class="card-body">
+                <div class="card-title">Users</div>
+                <div class="card-value">—</div>
+                <a asp-controller="Users" asp-action="Create" class="card-btn">Manage</a>
+            </div>
+        </div>
+
+        <div class="dash-card">
+            <div class="card-icon">🧾</div>
+            <div class="card-body">
+                <div class="card-title">Orders</div>
+                <div class="card-value">—</div>
+                <a asp-controller="Home" asp-action="Index" class="card-btn">Manage</a>
+            </div>
+        </div>
+
+
+    </div>
+</section>
