@@ -1,9 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using E_commerce_PetShop.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<E_commerce_PetShopContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("E_commerce_PetShopContext") ?? throw new InvalidOperationException("Connection string 'E_commerce_PetShopContext' not found.")));
+
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -21,6 +26,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 

@@ -1,0 +1,101 @@
+﻿@model E_commerce_PetShop.Models.Order
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="container mt-4" style="font-family: sans-serif;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Create Order</h3>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">← Back to List</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="ProductId" class="form-label fw-semibold">Product</label>
+                        <select asp-for="ProductId" class="form-select" id="productSelect">
+                            <option value="">-- Select a Product --</option>
+                            @foreach (var p in ViewBag.Products)
+                            {
+                                <option value="@p.Id" data-price="@p.Price">@p.Name — ₱@p.Price.ToString("N2")</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Unit Price</label>
+                        <input type="text" id="unitPrice" class="form-control" readonly
+                               placeholder="Select a product first" style="background:#f8f9fa;" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="OrderedByName" class="form-label fw-semibold"></label>
+                        <input asp-for="OrderedByName" class="form-control" placeholder="Enter customer name" />
+                        <span asp-validation-for="OrderedByName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Quantity" class="form-label fw-semibold"></label>
+                        <input asp-for="Quantity" class="form-control" id="quantityInput" min="1" placeholder="Enter quantity" />
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="OrderedAt" class="form-label fw-semibold"></label>
+                        <input asp-for="OrderedAt" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="OrderedAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label fw-semibold"></label>
+                        <select asp-for="Status" class="form-select"
+                                asp-items="Html.GetEnumSelectList<E_commerce_PetShop.Models.OrderStatus>()">
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Total" class="form-label fw-semibold"></label>
+                        <input asp-for="Total" class="form-control" id="totalInput" readonly
+                               placeholder="Auto-calculated" style="background:#f8f9fa;" />
+                        <span asp-validation-for="Total" class="text-danger small"></span>
+                        <div class="text-muted small mt-1">Automatically calculated based on product price × quantity</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-success btn-sm">+ Create</button>
+                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const productSelect  = document.getElementById('productSelect');
+        const quantityInput  = document.getElementById('quantityInput');
+        const totalInput     = document.getElementById('totalInput');
+        const unitPriceInput = document.getElementById('unitPrice');
+
+        function recalculate() {
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            const price = parseFloat(selectedOption?.dataset.price) || 0;
+            const qty   = parseInt(quantityInput.value) || 0;
+            unitPriceInput.value = price > 0 ? '₱' + price.toFixed(2) : '';
+            totalInput.value     = price > 0 && qty > 0 ? (price * qty).toFixed(2) : '';
+        }
+
+        productSelect.addEventListener('change', recalculate);
+        quantityInput.addEventListener('input', recalculate);
+    </script>
+}

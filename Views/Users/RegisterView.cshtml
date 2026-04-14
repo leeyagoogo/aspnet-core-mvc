@@ -1,6 +1,6 @@
-﻿@model E_commerce_PetShop.ViewModel.LoginViewModel
+﻿@model E_commerce_PetShop.Models.Users
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Register";
     Layout = "_LoginLayout";
 }
 
@@ -24,27 +24,25 @@
         height: 100vh;
     }
 
-    /* LEFT: solid orange, no content */
     .paw-left {
-        width: 45%;
-        background: #F5A623 url('/pictures/bgmain.png') center/cover no-repeat;
-        background-size: cover; /* force bg to fill fully */
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-end; /* push content to bottom */
-        padding-top: 40px;
-    }
-
-    /* RIGHT: light gray form */
-    .paw-right {
         flex: 1;
         background: #f2f2f2;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 48px 64px;
+        overflow-y: auto;
+    }
+
+    .paw-right {
+        width: 45%;
+        background: #F5A623 url('/pictures/bgmain.png') center/cover no-repeat;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; /* center logo vertically */
+        overflow: hidden;
     }
 
     .paw-form-wrap {
@@ -56,7 +54,13 @@
             font-size: 34px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 28px;
+            margin-bottom: 6px;
+        }
+
+        .paw-form-wrap p.subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
         }
 
     .paw-lbl {
@@ -90,7 +94,7 @@
 
     .paw-pw-wrap {
         position: relative;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
     }
 
         .paw-pw-wrap .paw-inp {
@@ -164,60 +168,49 @@
         margin-top: -14px;
         margin-bottom: 12px;
     }
-
 </style>
 
 <div class="paw-page">
-
-    <!-- LEFT: plain orange panel -->
     <div class="paw-left">
-        <img src="~/pictures/logo.png" alt="Pawtopia Logo"
-             style="width:200px; object-fit:contain; margin-bottom: auto; margin-top: 40px;" />
-        <img src="~/pictures/dog&cat.png" alt="Pets"
-             style="width:100%; max-width:500px; object-fit:contain; display:block;" />
-    </div>
-
-    <!-- RIGHT: login form -->
-    <div class="paw-right">
         <div class="paw-form-wrap">
-            <h2>Login</h2>
+            <h2>Create your account</h2>
+            <p class="subtitle">Fill in the details below to get started</p>
 
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div style="background:#d4edda; border:1.5px solid #c3e6cb; border-radius:6px;
-                    padding:14px 16px; margin-bottom:20px; display:flex;
-                    align-items:center; gap:10px;">
-                    <span style="font-size:18px;">✅</span>
-                    <span style="font-size:14px; color:#155724; font-weight:500;">
-                        @TempData["SuccessMessage"]
-                    </span>
-                </div>
-            }
-
-            <form asp-controller="Users" asp-action="Login" method="post" novalidate>
+            <form asp-controller="Users" asp-action="Register" method="post" novalidate>
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-2" style="font-size:13px;"></div>
 
-                <label asp-for="Username" class="paw-lbl"></label>
-                <input asp-for="Username" class="paw-inp" autocomplete="username" />
+                <label asp-for="Name" class="paw-lbl">Full Name</label>
+                <input asp-for="Name" class="paw-inp" placeholder="Juan dela Cruz" />
+                <span asp-validation-for="Name" class="paw-val-err"></span>
+
+                <label asp-for="Email" class="paw-lbl">Email</label>
+                <input asp-for="Email" class="paw-inp" placeholder="you@email.com" />
+                <span asp-validation-for="Email" class="paw-val-err"></span>
+
+                <label asp-for="Username" class="paw-lbl">Username</label>
+                <input asp-for="Username" class="paw-inp" placeholder="juandc123" autocomplete="username" />
                 <span asp-validation-for="Username" class="paw-val-err"></span>
 
-                <label asp-for="Password" class="paw-lbl"></label>
+                <label asp-for="Password" class="paw-lbl">Password</label>
                 <div class="paw-pw-wrap">
-                    <input asp-for="Password" class="paw-inp" type="password" id="pwField" autocomplete="current-password" />
-                    <button type="button" class="paw-pw-toggle" id="pwToggle" title="Show/hide password">&#128065;</button>
+                    <input asp-for="Password" class="paw-inp" type="password" id="pwField" autocomplete="new-password" />
+                    <button type="button" class="paw-pw-toggle" id="pwToggle">&#128065;</button>
                 </div>
                 <span asp-validation-for="Password" class="paw-val-err"></span>
 
-                <button type="submit" class="paw-btn">Sign In</button>
+                <button type="submit" class="paw-btn">Create account</button>
             </form>
 
             <p class="paw-new">
-                New User? <a asp-controller="Users" asp-action="Register">Create an account</a>
+                Already have an account? <a asp-controller="Users" asp-action="Login">Sign in</a>
             </p>
         </div>
     </div>
-
+    <div class="paw-right">
+        <img src="~/pictures/logo.png" alt="Pawtopia Logo"
+             style="width:220px; object-fit:contain;" />
+    </div>
 </div>
 
 @section Scripts {
@@ -230,5 +223,7 @@
             pwToggle.innerHTML = isPassword ? '&#128064;' : '&#128065;';
         });
     </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
-

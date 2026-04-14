@@ -1,55 +1,271 @@
-﻿@{
+﻿@model E_commerce_PetShop.ViewModel.DashboardViewModel
+
+@{
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<section class="hero admin-hero container">
-    <div class="hero-content">
-        <div class="hero-left">
+@section FullWidthHero {
+    <section class="admin-hero" style="
+        background: #F5A623 url('/pictures/bgmain.png') center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 80px;
+        overflow: hidden;
+        min-height: 420px;
+    ">
+        <div class="hero-content" style="display: flex; align-items: center; 
+             justify-content: space-between; width: 100%;">
 
-            <h1>WHERE</h1>
-            <h1 class="highlight">PAWS</h1>
-            <h1>MEET PARADISE</h1>
-            <p class="subtitle">From treats to toys, find your pet's joy.</p>
-            <a asp-controller="Products" asp-action="Index" class="shop-btn">Manage Products</a>
+            <!-- LEFT: text -->
+            <div class="hero-left">
+                <h1>WHERE</h1>
+                <h1 class="highlight">PAWS</h1>
+                <h1>MEET PARADISE</h1>
+                <p class="subtitle">From treats to toys, find your pet's joy.</p>
+                <a asp-controller="Products" asp-action="Index" class="shop-btn">Manage Products</a>
+            </div>
+
+            <!-- RIGHT: dog & cat image -->
+            <div style="display: flex; align-items: flex-end; height: 420px;">
+                <img src="~/pictures/dog&cat.png" alt="Pets"
+                     style="height: 100%; max-height: 420px; 
+                            object-fit: contain; object-position: bottom;" />
+            </div>
+
+        </div>
+    </section>
+}
+
+<section class="admin-dashboard container mt-4">
+    <h3 class="dashboard-title mb-3">Admin Dashboard</h3>
+
+    <!-- Stat cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-md-3">
+            <div class="dash-card">
+                <div class="card-icon">🛒</div>
+                <div>
+                    <div class="card-title">Orders</div>
+                    <div class="card-value">@Model.TotalOrders</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="dash-card">
+                <div class="card-icon">💰</div>
+                <div>
+                    <div class="card-title">Sales (Today)</div>
+                    <div class="card-value">@Model.TotalSalesToday.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="dash-card">
+                <div class="card-icon">👥</div>
+                <div>
+                    <div class="card-title">Users</div>
+                    <div class="card-value">@Model.TotalCustomers</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="dash-card">
+                <div class="card-icon">📦</div>
+                <div>
+                    <div class="card-title">Stock</div>
+                    <div class="card-value">@Model.ProductsInStock</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left: chart + recent orders -->
+        <div class="col-lg-8">
+
+            <!-- Sales Chart -->
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>SALES CHART</strong>
+                    <small class="text-muted">Last 6 months</small>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart" style="width:100%; height:260px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <strong>RECENT ORDERS</strong>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width:60px;">ID</th>
+                                    <th>Customer / Product</th>
+                                    <th>Status</th>
+                                    <th style="width:120px;">Total</th>
+                                    <th style="width:90px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.RecentOrders != null && Model.RecentOrders.Any())
+                                {
+                                    @foreach (var order in Model.RecentOrders)
+                                    {
+                                        var badgeClass = order.Status switch
+                                        {
+                                            E_commerce_PetShop.Models.OrderStatus.Pending    => "bg-warning text-dark",
+                                            E_commerce_PetShop.Models.OrderStatus.Processing => "bg-info text-dark",
+                                            E_commerce_PetShop.Models.OrderStatus.Shipped    => "bg-primary",
+                                            E_commerce_PetShop.Models.OrderStatus.Completed  => "bg-success",
+                                            E_commerce_PetShop.Models.OrderStatus.Cancelled  => "bg-danger",
+                                            _ => "bg-secondary"
+                                        };
+                                        <tr>
+                                            <td>@order.OrderId</td>
+                                            <td>
+                                                @order.OrderedByName
+                                                <br />
+                                                <small class="text-muted">@order.Product?.Name</small>
+                                            </td>
+                                            <td><span class="badge @badgeClass">@order.Status</span></td>
+                                            <td>@order.Total.ToString("C")</td>
+                                            <td>
+                                                <a asp-controller="Orders" asp-action="Details"
+                                                   asp-route-id="@order.OrderId"
+                                                   class="btn btn-sm btn-outline-primary">View</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-3">No orders yet.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="hero-right">
-            <img src="~/pictures/dog&cat.png" alt="Pets" class="pets-image" />
+        <!-- Right: quick actions + notifications -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-3">
+                <div class="card-header"><strong>QUICK ACTIONS</strong></div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Products" asp-action="Create"
+                           class="btn btn-outline-success">+ Add Product</a>
+                        <a asp-controller="Products" asp-action="Index"
+                           class="btn btn-outline-secondary">Manage Products</a>
+                        <a asp-controller="Users" asp-action="Index"
+                           class="btn btn-outline-secondary">View Users</a>
+                        <a asp-controller="Orders" asp-action="Index"
+                           class="btn btn-outline-secondary">View Orders</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header"><strong>NOTIFICATIONS</strong></div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        @if (Model.LowStockAlerts > 0)
+                        {
+                            <li class="mb-2"> ⚠️ <strong>@Model.LowStockAlerts product(s) low in stock:</strong>
+                                <ul class="mb-0 mt-1" style="font-size:0.85rem;">
+
+            @foreach (var p in Model.LowStockProducts)
+            {
+                <li>@p.Name — <span class="text-danger fw-bold">@p.Stock left</span></li>
+            }
+        </ul>
+    </li>
+}
+else
+{
+    <li class="mb-2">✅ All products are sufficiently stocked</li>
+}
+                        
+                        <li class="mb-2">📦 @Model.ProductsCount total products</li>
+                        <li>👥 @Model.TotalCustomers users registered</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="admin-dashboard container">
-    <h3 class="dashboard-title">Admin Dashboard</h3>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        const orders = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            (Model.RecentOrders ?? new List<E_commerce_PetShop.Models.Order>())
+            .Select(o => new {
+                month = o.OrderedAt.ToString("MMM"),
+                total = o.Total
+            })
+        ));
 
-    <div class="card-grid">
-        <div class="dash-card">
-            <div class="card-icon">📦</div>
-            <div class="card-body">
-                <div class="card-title">Products</div>
-                <div class="card-value">—</div>
-                <a asp-controller="Products" asp-action="Index" class="card-btn">Manage</a>
-            </div>
-        </div>
+        const monthMap = {};
+        orders.forEach(o => {
+            monthMap[o.month] = (monthMap[o.month] || 0) + o.total;
+        });
 
-        <div class="dash-card">
-            <div class="card-icon">👥</div>
-            <div class="card-body">
-                <div class="card-title">Users</div>
-                <div class="card-value">—</div>
-                <a asp-controller="Users" asp-action="Create" class="card-btn">Manage</a>
-            </div>
-        </div>
+        const monthNames = ["Jan","Feb","Mar","Apr","May","Jun",
+                            "Jul","Aug","Sep","Oct","Nov","Dec"];
+        const now = new Date();
+        const labels = [];
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            labels.push(monthNames[d.getMonth()]);
+        }
 
-        <div class="dash-card">
-            <div class="card-icon">🧾</div>
-            <div class="card-body">
-                <div class="card-title">Orders</div>
-                <div class="card-value">—</div>
-                <a asp-controller="Home" asp-action="Index" class="card-btn">Manage</a>
-            </div>
-        </div>
+        const data = labels.map(m => monthMap[m] || 0);
 
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sales (₱)',
+                    data: data,
+                    backgroundColor: 'rgba(245,166,35,0.7)',
+                    borderColor: '#F5A623',
+                    borderWidth: 2,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => '₱' + ctx.parsed.y.toLocaleString()
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: val => '₱' + val.toLocaleString()
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
 
-    </div>
-</section>
+                           

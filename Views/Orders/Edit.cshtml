@@ -1,0 +1,73 @@
+﻿@model E_commerce_PetShop.Models.Order
+@{
+    ViewData["Title"] = "Edit Order";
+}
+
+<div class="container mt-4" style="font-family: sans-serif;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Edit Order</h3>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">← Back to List</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="OrderId" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="ProductId" class="form-label fw-semibold">Product</label>
+                        <select asp-for="ProductId" class="form-select" asp-items="ViewBag.Products">
+                            <option value="">-- Select a Product --</option>
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="OrderedByName" class="form-label fw-semibold"></label>
+                        <input asp-for="OrderedByName" class="form-control" />
+                        <span asp-validation-for="OrderedByName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Quantity" class="form-label fw-semibold"></label>
+                        <input asp-for="Quantity" class="form-control" />
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="OrderedAt" class="form-label fw-semibold"></label>
+                        <input asp-for="OrderedAt" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="OrderedAt" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label fw-semibold"></label>
+                        <select asp-for="Status" class="form-select"
+                                asp-items="Html.GetEnumSelectList<E_commerce_PetShop.Models.OrderStatus>()">
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Total" class="form-label fw-semibold"></label>
+                        <input asp-for="Total" class="form-control" />
+                        <span asp-validation-for="Total" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Save Changes</button>
+                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

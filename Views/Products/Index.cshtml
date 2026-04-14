@@ -1,65 +1,104 @@
 ﻿@model IEnumerable<E_commerce_PetShop.Models.Product>
-
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Products</h3>
+        <div class="d-flex gap-2 align-items-center">
+            <input type="text" id="productSearch" class="form-control form-control-sm"
+                   placeholder="Search by product's name..." style="width:220px;" />
+            <a asp-action="Create" class="btn btn-sm btn-success">+ Create New</a>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stock)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stock)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:110px;">Image</th>
+                            <th>Name</th>
+                            <th class="d-none d-md-table-cell">Description</th>
+                            <th style="width:110px;">Price</th>
+                            <th style="width:90px;">Stock</th>
+                            <th style="width:170px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        @if (!Model?.Any() ?? true)
+                        {
+                            <tr id="noProductsRow">
+                                <td colspan="6" class="text-center text-muted py-4">No products found.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr data-name="@item.Name.ToLower()">
+                                    <td>
+                                        <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? Url.Content("~/pictures/logo.png") : item.ImageUrl)"
+                                             alt="@item.Name"
+                                             style="width:96px; height:64px; object-fit:cover; border-radius:6px; border:1px solid #e9ecef;" />
+                                    </td>
+                                    <td>
+                                        <strong>@item.Name</strong>
+                                        <div class="d-block d-md-none text-muted small">@item.Description</div>
+                                    </td>
+                                    <td class="d-none d-md-table-cell text-truncate" style="max-width:320px;">@item.Description</td>
+                                    <td>
+                                        @string.Format("{0:C}", item.Price)
+                                    </td>
+                                    <td>
+                                        <span class="badge @(item.Stock > 0 ? "bg-success" : "bg-danger")">
+                                            @item.Stock
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                            <form asp-action="Delete" asp-route-id="@item.Id" method="post"
+                                                  onsubmit="return confirm('Delete this product?');" class="m-0">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <div id="noSearchResults" class="text-center text-muted py-4 d-none">
+                    No products match your search.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('productSearch').addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('#productTableBody tr[data-name]');
+            const noResults = document.getElementById('noSearchResults');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name');
+                const match = name.includes(query);
+                row.style.display = match ? '' : 'none';
+                if (match) visibleCount++;
+            });
+
+            noResults.classList.toggle('d-none', visibleCount > 0 || query === '');
+        });
+    </script>
 }
-    </tbody>
-</table>
+

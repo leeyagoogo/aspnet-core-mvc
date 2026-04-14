@@ -7,107 +7,109 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/E_commerce_PetShop.styles.css" asp-append-version="true" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar, .navbar a, .nav-link {
+            font-family: 'Nunito', sans-serif; /* replace with your actual font name */
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
 
     <!--HEADER-->
-    <header>
-        <div class="logo">
+    <header style="background:#F5A623; display:flex; align-items:center;
+                   padding:0 32px; height:64px; position:sticky; top:0; z-index:100;
+                   box-shadow: 0 2px 8px rgba(0,0,0,0.10);">
+
+        <!-- Logo -->
+        <div class="logo" style="flex-shrink:0;">
             <a asp-controller="Home" asp-action="Index">
-                <img src="~/pictures/logotransparent.png" alt="PawTopia logo" />
+                <img src="~/pictures/logotransparent.png" alt="PawTopia logo" style="height:44px;" />
             </a>
         </div>
 
-        <div class="hamburger" id="hamburger">
-            <img src="~/pictures/hamburger.png" alt="Menu" />
-        </div>
+        @{
+            var hideNav = ViewData["HideNav"] as bool? ?? false;
+        }
 
-        <nav id="nav">
-            <ul>
-                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                <li><a asp-controller="Products" asp-action="Index">Products</a></li>
-@*                 <li><a asp-controller="Home" asp-action="Index">About</a></li>
-                <li><a asp-controller="Home" asp-action="Index">Contact</a></li> *@
-                <li><a asp-controller="Users" asp-action="Index">Users</a></li>
-                <li><a asp-controller="Users" asp-action="Login">Logout</a></li>
+        @if (!hideNav)
+        {
+            <!-- Left spacer -->
+            <div style="min-width:180px; flex-shrink:0;"></div>
+
+            <!-- Nav links — centered -->
+            <ul style="display:flex; align-items:center; gap:32px; list-style:none;
+                     margin:0 auto; padding:0; flex:1; justify-content:center;
+                     font-family: sans-serif;">
+                <li>
+                    <a asp-controller="Home" asp-action="Index"
+                       style="color:#fff; font-weight:500; font-size:15px;
+                            text-decoration:none; padding:6px 0;">Home</a>
+                </li>
+                <li>
+                    <a asp-controller="Products" asp-action="Index"
+                       style="color:#fff; font-weight:500; font-size:15px;
+                            text-decoration:none; padding:6px 0;">Products</a>
+                </li>
+                <li>
+                    <a asp-controller="Orders" asp-action="Index"
+                       style="color:#fff; font-weight:500; font-size:15px;
+                            text-decoration:none; padding:6px 0;">Orders</a>
+                </li>
+                <li>
+                    <a asp-controller="Users" asp-action="Index"
+                       style="color:#fff; font-weight:500; font-size:15px;
+                            text-decoration:none; padding:6px 0;">Users</a>
+                </li>
             </ul>
-        </nav>
-
-@*         <div class="icons">
-            <div class="search-container">
-                <img src="~/pictures/searchicon.png" id="searchIcon" />
-                <input type="text" id="searchInput" placeholder="Search..." />
-            </div>
-
-            <div class="user-container">
-                <img src="~/pictures/account.png" id="userIcon" alt="User" />
-                <div class="login-dropdown" id="loginDropdown">
-                    <form id="loginForm">
-                        <input type="text" placeholder="Username" id="username" />
-                        <input type="password" placeholder="Password" id="password" />
-                        <button type="submit" class="login-btn">Login</button>
+            <!-- User indicator — right -->
+            @if (Context.Session.GetString("LoggedInUser") != null)
+            {
+                <div style="display:flex; align-items:center; gap:10px;
+                                    flex-shrink:0; min-width:180px; justify-content:flex-end;">
+                    <div style="width:34px; height:34px; border-radius:50%;
+                                        background:#1a1a1a; display:flex; align-items:center;
+                                        justify-content:center; font-weight:700; font-size:14px;
+                                        color:#F5A623; flex-shrink:0;">
+                        @Context.Session.GetString("LoggedInName")?.Substring(0, 1).ToUpper()
+                    </div>
+                    <span style="font-size:14px; font-weight:600; color:#fff;">
+                        @Context.Session.GetString("LoggedInName")
+                    </span>
+                    <form asp-controller="Users" asp-action="Logout" method="post" class="m-0">
+                        @Html.AntiForgeryToken()
+                        <button type="submit"
+                                style="background:#1a1a1a; border:none; border-radius:6px;
+                                               color:#F5A623; font-size:13px; font-weight:600;
+                                               padding:6px 14px; cursor:pointer;">
+                            Logout
+                        </button>
                     </form>
                 </div>
-            </div>
-
-            <a asp-controller="Cart" asp-action="Index">
-                <img src="~/pictures/carticon.png" alt="Cart" />
-            </a>
-        </div> *@
+            }
+        }
     </header>
 
-    <!--MAIN CONTENT-->
+    <!-- Optional full-width content (pages opt-in) -->
+    @RenderSection("FullWidthHero", required: false)
+
+    <!--MAIN CONTENT (constrained)-->
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-@* 
-    <!--FOOTER-->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <img src="~/pictures/logotransparent.png" alt="PawTopia logo" class="footer-logo" />
-                <p>
-                    If you have any questions, please <br />contact us at
-                    <a href="mailto:pawtopia@example.com">pawtopia@example.com</a>
-                </p>
-                <div class="social-icons">
-                    <a href="https://x.com" target="_blank">
-                        <img src="~/pictures/twittard.png" alt="X" />
-                    </a>
-                    <a href="https://www.facebook.com" target="_blank">
-                        <img src="~/pictures/facebook.png" alt="Facebook" />
-                    </a>
-                    <a href="https://www.instagram.com" target="_blank">
-                        <img src="~/pictures/instagram.png" alt="Instagram" />
-                    </a>
-                    <a href="https://www.linkedin.com" target="_blank">
-                        <img src="~/pictures/linkedin.png" alt="LinkedIn" />
-                    </a>
-                </div>
-                <p>&copy; 2026 Pawtopia. All rights reserved.</p>
-            </div>
-
-            <div class="footer-right">
-                <div class="footer-column">
-                    <h3>Shop Now</h3>
-                    <ul>
-                        <li><a asp-controller="Products" asp-action="Index" asp-route-category="dog">Dog</a></li>
-                        <li><a asp-controller="Products" asp-action="Index" asp-route-category="cat">Cat</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Customer Service</h3>
-                    <ul>
-                        <li><a asp-controller="Home" asp-action="About">About Us</a></li>
-                        <li><a asp-controller="Home" asp-action="Contact">Contact Us</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer> *@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

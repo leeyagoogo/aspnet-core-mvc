@@ -1,45 +1,43 @@
 ﻿@model E_commerce_PetShop.Models.Users
-
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete User";
 }
 
-<h1>Delete</h1>
+<div class="container mt-4" style="font-family: sans-serif;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Delete User</h3>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">← Back to List</a>
+    </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Users</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="UserId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <p class="text-muted mb-3">Are you sure you want to delete this user? This action cannot be undone.</p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Name</label>
+                    <input type="text" class="form-control" value="@Model.Name" readonly style="background:#f8f9fa;" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Email</label>
+                    <input type="text" class="form-control" value="@Model.Email" readonly style="background:#f8f9fa;" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Username</label>
+                    <input type="text" class="form-control" value="@Model.Username" readonly style="background:#f8f9fa;" />
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="UserId" />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

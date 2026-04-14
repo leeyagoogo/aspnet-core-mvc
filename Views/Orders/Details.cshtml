@@ -1,0 +1,62 @@
+﻿@model E_commerce_PetShop.Models.Order
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container mt-4" style="font-family: sans-serif;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Order Details</h3>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">← Back to List</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Product</label>
+                    <input type="text" class="form-control" value="@Model.Product?.Name" readonly style="background:#f8f9fa;" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Ordered By</label>
+                    <input type="text" class="form-control" value="@Model.OrderedByName" readonly style="background:#f8f9fa;" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Quantity</label>
+                    <input type="text" class="form-control" value="@Model.Quantity" readonly style="background:#f8f9fa;" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Ordered At</label>
+                    <input type="text" class="form-control" value="@Model.OrderedAt.ToString("MMM dd, yyyy hh:mm tt")" readonly style="background:#f8f9fa;" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Status</label>
+                    <div>
+                        <span class="badge fs-6 @(Model.Status == E_commerce_PetShop.Models.OrderStatus.Completed  ? "bg-success" :
+                                                                                 Model.Status == E_commerce_PetShop.Models.OrderStatus.Pending ? "bg-warning text-dark" :
+                                                                                 Model.Status == E_commerce_PetShop.Models.OrderStatus.Cancelled ? "bg-danger" :
+                                                                                 Model.Status == E_commerce_PetShop.Models.OrderStatus.Processing ? "bg-info text-dark" :
+                                                                                 Model.Status == E_commerce_PetShop.Models.OrderStatus.Shipped ? "bg-primary" : "bg-secondary")">
+                            @Model.Status
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Total</label>
+                    <input type="text" class="form-control fw-bold" value="@Model.Total.ToString("C")" readonly style="background:#f8f9fa;" />
+                </div>
+
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.OrderId" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">← Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

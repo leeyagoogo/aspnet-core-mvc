@@ -1,0 +1,104 @@
+﻿@model IEnumerable<E_commerce_PetShop.Models.Order>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="container mt-4" style="font-family: sans-serif;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Orders</h3>
+        <div class="d-flex gap-2 align-items-center">
+            <input type="text" id="orderSearch" class="form-control form-control-sm"
+                   placeholder="Search by order name..." style="width:220px;" />
+            <a asp-action="Create" class="btn btn-sm btn-success">+ Create New</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th class="d-none d-md-table-cell">Ordered By</th>
+                            <th style="width:90px;">Qty</th>
+                            <th class="d-none d-md-table-cell" style="width:160px;">Ordered At</th>
+                            <th style="width:110px;">Status</th>
+                            <th style="width:110px;">Total</th>
+                            <th style="width:190px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        @if (!Model?.Any() ?? true)
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No orders found.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr data-name="@item.Product?.Name?.ToLower()">
+                                    <td>
+                                        <strong>@item.Product?.Name</strong>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">@item.OrderedByName</td>
+                                    <td>@item.Quantity</td>
+                                    <td class="d-none d-md-table-cell text-muted" style="font-size:0.9rem;">
+                                        @item.OrderedAt.ToString("MMM dd, yyyy hh:mm tt")
+                                    </td>
+                                    <td>
+                                        <span class="badge @(item.Status == OrderStatus.Completed  ? "bg-success" :
+                                                                                                           item.Status == OrderStatus.Pending ? "bg-warning text-dark" :
+                                                                                                           item.Status == OrderStatus.Cancelled ? "bg-danger" :
+                                                                                                           item.Status == OrderStatus.Processing ? "bg-info text-dark" :
+                                                                                                           item.Status == OrderStatus.Shipped ? "bg-primary" : "bg-secondary")">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>@string.Format("{0:C}", item.Total)</td>
+                            <td>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-sm btn-outline-info">Details</a>
+                                    <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <form asp-action="Delete" asp-route-id="@item.OrderId" method="post"
+                                          onsubmit="return confirm('Delete this order?');" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                                                }
+                        }
+                    </tbody>
+                </table>
+
+                <div id="noSearchResults" class="text-center text-muted py-4 d-none">
+                    No orders match your search.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('orderSearch').addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('#orderTableBody tr[data-name]');
+            const noResults = document.getElementById('noSearchResults');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name');
+                const match = name.includes(query);
+                row.style.display = match ? '' : 'none';
+                if (match) visibleCount++;
+            });
+
+            noResults.classList.toggle('d-none', visibleCount > 0 || query === '');
+        });
+    </script>
+}
