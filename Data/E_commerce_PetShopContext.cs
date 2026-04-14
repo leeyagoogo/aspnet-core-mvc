@@ -16,8 +16,8 @@ namespace E_commerce_PetShop.Data
 
         public DbSet<E_commerce_PetShop.Models.Users> Users { get; set; } = default!;
 
-        public DbSet<E_commerce_PetShop.Models.Role> Role { get; set; } = default!;
         public DbSet<E_commerce_PetShop.Models.Product> Product { get; set; } = default!;
+        public DbSet<E_commerce_PetShop.Models.Order> Order { get; set; } = default!;
 
     }
 }

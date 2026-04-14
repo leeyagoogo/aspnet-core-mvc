@@ -36,6 +36,26 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Orders/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Orders/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Orders/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Orders/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Orders/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Products/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -54,26 +74,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Products/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Roles/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcQ3JlYXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Roles/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcRGVsZXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Roles/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Roles/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcRWRpdC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Roles/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Shared/Error.cshtml]
@@ -110,6 +110,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Users/LoginView.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcTG9naW5WaWV3LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/Users/RegisterView.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcUmVnaXN0ZXJWaWV3LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Arlah/OneDrive/Desktop/PROEL4W_MVC/PROEL4W_MVC/E-commerce_PetShop/Views/_ViewImports.cshtml]

@@ -27,12 +27,5 @@ namespace E_commerce_PetShop.Models
         [StringLength(50, MinimumLength = 5, ErrorMessage = "Password should be a minimum of 5 and a maximum of 50.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
-        [Required]
-        [Display(Name = "Role")]
-        public int RoleId { get; set; }
-
-        [ForeignKey("RoleId")]
-        public Role? Role { get; set; }
     }
 }

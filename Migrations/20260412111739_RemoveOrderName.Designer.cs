@@ -4,6 +4,7 @@ using E_commerce_PetShop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_commerce_PetShop.Migrations
 {
     [DbContext(typeof(E_commerce_PetShopContext))]
-    partial class E_commerce_PetShopContextModelSnapshot : ModelSnapshot
+    [Migration("20260412111739_RemoveOrderName")]
+    partial class RemoveOrderName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

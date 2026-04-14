@@ -4,6 +4,7 @@ using E_commerce_PetShop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_commerce_PetShop.Migrations
 {
     [DbContext(typeof(E_commerce_PetShopContext))]
-    partial class E_commerce_PetShopContextModelSnapshot : ModelSnapshot
+    [Migration("20260327140914_thirdcreate")]
+    partial class thirdcreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,41 +24,6 @@ namespace E_commerce_PetShop.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("E_commerce_PetShop.Models.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
-
-                    b.Property<DateTime>("OrderedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OrderedByName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Order");
-                });
 
             modelBuilder.Entity("E_commerce_PetShop.Models.Product", b =>
                 {
@@ -93,6 +61,23 @@ namespace E_commerce_PetShop.Migrations
                     b.ToTable("Product");
                 });
 
+            modelBuilder.Entity("E_commerce_PetShop.Models.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
+
+                    b.Property<string>("UserRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("E_commerce_PetShop.Models.Users", b =>
                 {
                     b.Property<int>("UserId")
@@ -115,6 +100,9 @@ namespace E_commerce_PetShop.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -122,23 +110,20 @@ namespace E_commerce_PetShop.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("E_commerce_PetShop.Models.Order", b =>
+            modelBuilder.Entity("E_commerce_PetShop.Models.Users", b =>
                 {
-                    b.HasOne("E_commerce_PetShop.Models.Product", "Product")
-                        .WithMany("Orders")
-                        .HasForeignKey("ProductId")
+                    b.HasOne("E_commerce_PetShop.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("E_commerce_PetShop.Models.Product", b =>
-                {
-                    b.Navigation("Orders");
+                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

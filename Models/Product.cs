@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System.Collections.Generic; 
 namespace E_commerce_PetShop.Models
 {
     public class Product
@@ -28,5 +28,8 @@ namespace E_commerce_PetShop.Models
 
         [DataType(DataType.DateTime)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // ADD THIS ↓ — one product can have many orders
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

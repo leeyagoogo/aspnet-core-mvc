@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using E_commerce_PetShop.Data;
 using E_commerce_PetShop.Models;
@@ -34,19 +33,18 @@ namespace E_commerce_PetShop.Controllers
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View("LoginView", model);
-            }
 
-            // Alternate fixed credentials
+            // Hardcoded admin
             if (string.Equals(model.Username, "admin", StringComparison.OrdinalIgnoreCase)
                 && model.Password == "admin123")
             {
-                TempData["LoggedInUser"] = "admin";
+                HttpContext.Session.SetString("LoggedInUser", "admin");
+                HttpContext.Session.SetString("LoggedInName", "Admin");
                 return RedirectToAction("Index", "Home");
             }
 
-            // Check scaffolded users table (passwords are stored hashed)
+            // Database user
             var hashed = HashingService.HashPassword(model.Password);
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == model.Username && u.Password == hashed);
@@ -57,9 +55,55 @@ namespace E_commerce_PetShop.Controllers
                 return View("LoginView", model);
             }
 
-            // Successful login (replace with proper auth in production)
-            TempData["LoggedInUser"] = user.Username;
+            HttpContext.Session.SetString("LoggedInUser", user.Username);
+            HttpContext.Session.SetString("LoggedInName", user.Name);
             return RedirectToAction("Index", "Home");
+        }
+
+        // GET: Users/Register
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View("RegisterView", new Users());
+        }
+
+        // POST: Users/Register
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(Users users)
+        {
+            if (!ModelState.IsValid)
+                return View("RegisterView", users);
+
+            bool usernameTaken = await _context.Users.AnyAsync(u => u.Username == users.Username);
+            if (usernameTaken)
+            {
+                ModelState.AddModelError("Username", "Username is already taken.");
+                return View("RegisterView", users);
+            }
+
+            bool emailTaken = await _context.Users.AnyAsync(u => u.Email == users.Email);
+            if (emailTaken)
+            {
+                ModelState.AddModelError("Email", "Email is already registered.");
+                return View("RegisterView", users);
+            }
+
+            users.Password = HashingService.HashPassword(users.Password);
+            _context.Add(users);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Account created successfully! Please sign in.";
+            return RedirectToAction("Login", "Users");
+        }
+
+        // POST: Users/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Users");
         }
 
         // GET: Users
@@ -89,31 +133,16 @@ namespace E_commerce_PetShop.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            ViewBag.UserRole = new SelectList(new[]
-            {
-                new { RoleId = 1, UserRole = "Admin" },
-                new { RoleId = 2, UserRole = "User" }
-            }, "RoleId", "UserRole");
-
             return View();
         }
 
         // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Users users)
         {
             if (!ModelState.IsValid)
             {
-                // repopulate ViewBag before returning view on validation errors
-                ViewBag.UserRole = new SelectList(new[]
-                {
-                    new { RoleId = 1, UserRole = "Admin" },
-                    new { RoleId = 2, UserRole = "User" }
-                }, "RoleId", "UserRole");
-
                 return View(users);
             }
 
@@ -133,18 +162,23 @@ namespace E_commerce_PetShop.Controllers
                 return NotFound();
             }
 
-            var users = await _context.Users.FindAsync(id);
+            // Retrieve user without tracking to avoid accidentally modifying tracked entity
+            var users = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.UserId == id);
+
             if (users == null)
             {
                 return NotFound();
             }
-            ViewData["Role"] = new SelectList(_context.Role, "RoleId", "UserRole");
+
+            // Ensure the form does not display the hashed password
+            users.Password = string.Empty;
+
             return View(users);
         }
 
         // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("UserId,Name,Email,Username,Password")] Users users)
@@ -154,11 +188,34 @@ namespace E_commerce_PetShop.Controllers
                 return NotFound();
             }
 
+            // If password was left blank on the form, remove password validation so the edit can proceed
+            if (string.IsNullOrWhiteSpace(users.Password))
+            {
+                ModelState.Remove(nameof(users.Password));
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(users);
+                    var existing = await _context.Users.FindAsync(id);
+                    if (existing == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Update properties
+                    existing.Name = users.Name;
+                    existing.Email = users.Email;
+                    existing.Username = users.Username;
+
+                    // Only change password when a new one was provided
+                    if (!string.IsNullOrWhiteSpace(users.Password))
+                    {
+                        existing.Password = HashingService.HashPassword(users.Password);
+                    }
+
+                    _context.Update(existing);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
